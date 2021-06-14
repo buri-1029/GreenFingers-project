@@ -3,7 +3,8 @@
 
 <br/>
 
-## ✔️ Overview
+---
+---
 
 <br/>
 
@@ -25,12 +26,12 @@
 
 <br/>
 
-## ✔️ Tech
+## ✔️ Skill
 
-- ### FrontEnd
+- __FrontEnd__ : ![javascript](https://img.shields.io/badge/-Javascript-F7DF1E?logo=javascript&logoColor=white&style=flat) ![reactnative](https://img.shields.io/badge/-ReactNative-61DAFB?logo=react&logoColor=white&style=flat) ![android](https://img.shields.io/badge/-Android-3DDC84?logo=android&logoColor=white&style=flat)
 
-- ### BackEnd
 
+- __BackEnd__ :  ![java](https://img.shields.io/badge/-Java-007396?logo=java&logoColor=white&style=flat) ![spring boot](https://img.shields.io/badge/-SpringBoot-6DB33F?logo=springboot&logoColor=white&style=flat) ![mysql](https://img.shields.io/badge/-MySQL-4479A1?logo=mysql&logoColor=white&style=flat)![jpa](https://img.shields.io/badge/-JPA-gray?logoColor=white&style=flat) / ![python](https://img.shields.io/badge/-Python-3776AB?logo=python&logoColor=white&style=flat) ![flask](https://img.shields.io/badge/-Flask-000000?logo=flask&logoColor=white&style=flat) ![pytorch](https://img.shields.io/badge/-Pytorch-EE4C2C?logo=pytorch&logoColor=white&style=flat)  ![numpy](https://img.shields.io/badge/-Numpy-013243?logo=numpy&logoColor=white&style=flat)
 
 <br/>
 <br/>
