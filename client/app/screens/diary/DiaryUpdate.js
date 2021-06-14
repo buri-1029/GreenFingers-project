@@ -1,0 +1,266 @@
+// react
+import React, {useState} from 'react';
+import {
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import 'react-native-gesture-handler';
+
+// axios
+import {updateDiary} from '../../api/diary';
+
+// style
+import {Icon, Toast, Root, Badge} from 'native-base';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {
+  SubHeadingText,
+  TextInputBox,
+  ImgSelectBox,
+  ImgSelectBtn,
+  SelectedImgBox,
+  SelectedImg,
+  CompleteBtn,
+  CompleteBtnText,
+} from '../../assets/theme/DiaryStyle';
+
+// responsive-screen
+import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
+
+// image-picker
+import ImagePicker from 'react-native-image-crop-picker';
+
+//redux
+import {useDispatch, useSelector} from 'react-redux';
+import {modifyDiary} from '../../reducers/diaryReducer';
+
+export function DiaryUpdateScreen({route, navigation: {goBack}}) {
+  const [titleState, setTitleState] = useState(route.params.diary.title);
+  const [contentState, setContentState] = useState(route.params.diary.content);
+  const [imgState, setImgState] = useState(route.params.diary.imgUrls);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const maxImgCnt = 5; // 사진 선택 최대 개수
+
+  // 디스패치 정의
+  const dispatch = useDispatch();
+  const isModifyDiary = modifydiary => dispatch(modifyDiary(modifydiary));
+
+  const {modifyDiaryFlag} = useSelector(state => ({
+    modifyDiaryFlag: state.diaryReducer.modifydiary,
+  }));
+  // Toast 띄우는 함수
+  const toastShow = content => {
+    Toast.show({
+      text: content,
+      buttonText: '확인',
+      duration: 4000,
+    });
+  };
+  // console.log(route.params.diary);
+  // 다이어리 수정 api 요청 함수
+  const diaryUpdate = async () => {
+    // 제목, 내용, 사진 모두 입력했을 경우에만 다이어리 작성 api 요청
+    if (titleState == '') {
+      toastShow('제목을 입력해주세요.');
+    } else if (contentState == '') {
+      toastShow('내용을 입력해주세요.');
+    } else if (imgState.length == 0) {
+      toastShow('사진을 선택해주세요.');
+    } else {
+      setIsLoading(true);
+      const formData = new FormData();
+      formData.append('plantId', route.params.diary.plantId);
+      formData.append('title', titleState);
+      formData.append('content', contentState);
+      // formData.append('writeDateTime', route.params.selectedDate);
+      imgState.forEach((img, i) => {
+        formData.append('files', {
+          uri: img,
+          name: `image${i}.jpg`,
+          type: 'image/jpeg',
+        });
+      });
+      await updateDiary(route.params.diary.id, formData);
+      isModifyDiary(!modifyDiaryFlag);
+      setIsLoading(false);
+      goBack();
+    }
+  };
+
+  // 여러개의 사진 선택
+  const PickMultiple = () => {
+    ImagePicker.openPicker({
+      compressImageMaxWidth: 500,
+      compressImageMaxHeight: 500,
+      multiple: true,
+      mediaType: 'photo', // 사진만 받기(동영상x)
+    })
+      .then(images => {
+        const tmpImg = images.map(i => i.path);
+        // 최대 사진 개수가 넘어갈 경우 Toast 띄움
+        if (imgState.length + tmpImg.length > maxImgCnt) {
+          toastShow(`사진은 최대 ${maxImgCnt}장까지 선택할 수 있어요.`);
+        }
+        // 최대 사진 개수 이하일 경우 imgState에 새로 선택한 사진 추가
+        else {
+          const img = imgState;
+          setImgState(img.concat(tmpImg));
+        }
+      })
+      .catch(e => console.log(e));
+  };
+
+  // 사진 촬영
+  const PickSingleWithCamera = () => {
+    ImagePicker.openCamera({
+      cropping: true,
+      width: 500,
+      height: 500,
+      mediaType: 'photo', // 사진만 받기(동영상x)
+    })
+      .then(image => {
+        // 최대 사진 개수가 넘어갈 경우 Toast 띄움
+        if (imgState.length + 1 > maxImgCnt) {
+          toastShow(`사진은 최대 ${maxImgCnt}장까지 선택할 수 있어요.`);
+        }
+        // 최대 사진 개수 이하일 경우 imgState에 새로 선택한 사진 추가
+        else {
+          setImgState([...imgState, image.path]);
+        }
+      })
+      .catch(e => console.log(e));
+  };
+
+  // 엑스 버튼 눌렀을 때 imgState에서 해당 사진 uri 삭제하는 함수
+  const deleteImg = deleteID => {
+    const newImg = imgState.filter((img, idx) => {
+      return idx !== deleteID;
+    });
+    setImgState(newImg);
+  };
+
+  // 촬영하거나 선택한 사진들 보여주는 함수
+  const imgRendering = () => {
+    return imgState.map((img, idx) => (
+      <View key={idx}>
+        <SelectedImg source={{uri: img}} />
+        <TouchableOpacity
+          style={{position: 'absolute', zIndex: 10, right: -3}}
+          onPress={() => deleteImg(idx)}>
+          <Badge style={{backgroundColor: 'rgba(0,0,0,0)'}}>
+            <View style={{backgroundColor: 'white', borderRadius: 50}}>
+              <Icon
+                type="AntDesign"
+                name="closecircle"
+                style={{color: 'rgba(0,0,0, 0.8)', fontSize: 25}}
+              />
+            </View>
+          </Badge>
+        </TouchableOpacity>
+      </View>
+    ));
+  };
+
+  const renderLoading = () => {
+    if (isLoading) {
+      return (
+        <ActivityIndicator
+          size="large"
+          color="#8AD169"
+          style={{position: 'absolute', left: 0, right: 0, bottom: 0, top: 0}}
+        />
+      );
+    } else {
+      return null;
+    }
+  };
+
+  return (
+    <Root>
+      <ScrollView>
+        <KeyboardAwareScrollView contentContainerStyle={styles.container}>
+          {/* 글 작성 하는 영역 */}
+          <SubHeadingText>
+            <Text style={{fontWeight: 'bold'}}>글 작성</Text>
+          </SubHeadingText>
+          <TextInputBox
+            placeholder="제목"
+            onChangeText={setTitleState}
+            value={titleState}
+          />
+          <TextInputBox
+            onChangeText={setContentState}
+            value={contentState}
+            multiline
+            numberOfLines={10}
+            placeholder="식물과 있었던 일을 기록해주세요 :)"
+          />
+          {/* 사진 선택 영역 */}
+          <SubHeadingText>
+            <Text style={{fontWeight: 'bold'}}>사진선택</Text>
+          </SubHeadingText>
+          <ImgSelectBox>
+            <ImgSelectBtn
+              style={{marginRight: 10}}
+              onPress={() => {
+                PickMultiple();
+              }}>
+              <Icon
+                type="MaterialCommunityIcons"
+                name="image-multiple"
+                style={{fontSize: 50}}
+              />
+              <Text>사진 선택</Text>
+            </ImgSelectBtn>
+            <ImgSelectBtn
+              style={{marginLeft: 10}}
+              onPress={() => {
+                PickSingleWithCamera();
+              }}>
+              <Icon
+                type="MaterialCommunityIcons"
+                name="camera"
+                style={{fontSize: 50}}
+              />
+              <Text>사진 촬영</Text>
+            </ImgSelectBtn>
+          </ImgSelectBox>
+
+          {/* 선택한 사진 보여주는 영역 */}
+          <SubHeadingText>
+            <Text style={{fontWeight: 'bold'}}>선택한 사진</Text>
+            <Text style={{color: 'grey', marginLeft: 7}}>
+              {imgState ? imgState.length : 0}/{maxImgCnt}
+            </Text>
+          </SubHeadingText>
+          <SelectedImgBox>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}>
+              {imgState && imgRendering()}
+            </ScrollView>
+          </SelectedImgBox>
+
+          {/* 완료 버튼 */}
+          <CompleteBtn
+            onPress={() => {
+              diaryUpdate();
+            }}>
+            <CompleteBtnText>완료</CompleteBtnText>
+          </CompleteBtn>
+
+          {/* indicator 표시 */}
+          {renderLoading()}
+        </KeyboardAwareScrollView>
+      </ScrollView>
+    </Root>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {height: hp('85%'), paddingHorizontal: 30, paddingVertical: 10},
+});
