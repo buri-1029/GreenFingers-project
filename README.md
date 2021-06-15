@@ -34,7 +34,8 @@
 
 ## ✔️ AI : 식물 이미지 분류
 
-<img src="assets/img/ai.png" width="75%">
+![ai](assets/img/ai.png)
+
 
 ```
     1. 학습에 필요한 90가지 식물마다 500개 이미지 데이터 수집/전처리(구글, 네이버 크롤링)
