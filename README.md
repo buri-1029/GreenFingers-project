@@ -8,7 +8,7 @@
 
 <br/>
 
-## ✔️ Feat : 한눈에 보기 
+## ✔️ Feat : 기능 한눈에 보기 
 
 <br/>
 
@@ -16,11 +16,11 @@
 
 <br/>
 
-## ✔️ Architecture
+## ✔️ Architecture : 아키텍처
 
 <br/>
 
-## ✔️ UI : 어플 디자인
+## ✔️ UI : 앱 디자인
 
 ![ui](assets/img/ui.png)
 
