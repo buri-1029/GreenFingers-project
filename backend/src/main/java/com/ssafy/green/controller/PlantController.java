@@ -105,7 +105,7 @@ public class PlantController {
     // 식물 상세 정보 조회
     @ApiOperation(value = "식물 상세 정보 조회", notes =
             "Path\n" +
-            "- pid : 식물 고유 번호(식물 조회 후)\n"+
+            "- id : 식물 정보 고유 번호(식물 조회 후)\n"+
             "Response\n" +
             "- id : 식물 정보 고유 번호 \n" +
             "- common : 식물 학명 \n" +
@@ -128,10 +128,10 @@ public class PlantController {
         return null;
     }
 
-    // 나의 식물 조회 기반 등록 : 식물 pid 포함 정보 필요
-    @ApiOperation(value = "나의 식물 조회 기반 등록", notes =
+    // 나의 식물 조회 기반 등록 : 식물 정보 id 포함 정보 필요
+    @ApiOperation(value = "식물 조회 기반 등록", notes =
             "Request\n" +
-            "- pid : 식물 고유 번호(식물 조회 후)\n"+
+            "- id : 식물 정보 고유 번호(식물 조회 후)\n"+
             "- rid : 식물을 등록할 방 고유 번호\n"+
             "- nickname : 식물 애칭\n"+
             "- image : 등록할 식물 이미지(null인 경우 기본 이미지)\n"+
