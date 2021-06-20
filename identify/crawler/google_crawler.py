@@ -36,20 +36,18 @@ for search in search_list:
                 break
         last_height = new_height
 
-        images = driver.find_elements_by_css_selector(".rg_i.Q4LuWd")
-        print(search)
-        print(len(images))
-        count = 1
-        for image in images:
-            try:
-                image.click()
-                time.sleep(2)
-                imgUrl = driver.find_element_by_xpath(
-                  '/html/body/div[2]/c-wiz/div[3]/div[2]/div[3]/div/div/div[3]/div[2]/c-wiz/div/div[1]/div[1]/div/div[2]/a/img').get_attribute("src")
-                path = f"./{search}/"
-                urllib.request.urlretrieve(imgUrl, path + str(count) + ".jpg")
-                count = count + 1
-            except:
-                pass
+    images = driver.find_elements_by_css_selector(".rg_i.Q4LuWd")
+    count = 1
+    for image in images:
+        try:
+            image.click()
+            time.sleep(2)
+            imgUrl = driver.find_element_by_xpath(
+                '/html/body/div[2]/c-wiz/div[3]/div[2]/div[3]/div/div/div[3]/div[2]/c-wiz/div/div[1]/div[1]/div/div[2]/a/img').get_attribute("src")
+            path = f"./{search}/"
+            urllib.request.urlretrieve(imgUrl, path + str(count) + ".jpg")
+            count = count + 1
+        except:
+            pass
 
-        driver.close()
+    driver.close()
