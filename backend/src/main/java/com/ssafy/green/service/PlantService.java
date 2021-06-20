@@ -50,26 +50,11 @@ public class PlantService {
                 .collect(Collectors.toList());
     }
 
-    // 식물 이름 조회
-    public List<PlantListResponse> findByName(String userId, String search) {
-        User curUser = getUser(userId);
-        return plantInfoRepository.findByNameContaining(search).stream()
-                .map(PlantListResponse::new)
-                .collect(Collectors.toList());
-    }
-
     // 식물 학명 조회
     public PlantResponse findByCommon(String userId, String common) {
         User curUser = getUser(userId);
         Optional<PlantInfo> plantInfo = plantInfoRepository.findByCommon(common);
         return new PlantResponse(plantInfo.get());
-    }
-
-    // 식물 상세 정보 조회
-    public PlantResponse findByPlantInfo(String userId, Long id) {
-        User curUser = getUser(userId);
-        PlantInfo plantInfo = plantInfoRepository.findById(id).get();
-        return new PlantResponse(plantInfo);
     }
 
     // 나의 식물 조회 기반 등록

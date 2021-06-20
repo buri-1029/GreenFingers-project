@@ -55,29 +55,8 @@ public class PlantController {
         return list;
     }
 
-    // 식물 이름 조회
-    @ApiOperation(value = "식물 이름 조회", notes =
-            "Path\n" +
-            "- search : 조회할 키워드\n\n"+
-            "Response\n" +
-            "- id : 식물 정보 고유 번호 \n" +
-            "- common : 식물 학명 \n" +
-            "- name : 식물 이름 \n\n" +
-            "값 없을 때(null) : 토큰 검사 실패한 경우 ")
-    @GetMapping("/info/{search}")
-    public List<PlantListResponse> findAllByCommonAndName(@RequestHeader("TOKEN") String token, @PathVariable String search){
-        List<PlantListResponse> list = null;
-        try{
-            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
-            list = plantService.findByName(decodedToken.getUid(), search);
-        } catch (FirebaseAuthException e) {
-
-        }
-        return list;
-    }
-
-    // 식물 학명 조회
-    @ApiOperation(value = "식물 학명 조회", notes =
+    // 학명 식물 상세 정보 조회
+    @ApiOperation(value = "학명 식물 상세 정보 조회", notes =
             "Path\n" +
             "- common : 식물 학명(식물 이미지 분류 후)\n\n"+
             "Response\n" +
@@ -96,32 +75,6 @@ public class PlantController {
         try{
             FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
             return plantService.findByCommon(decodedToken.getUid(), common);
-        } catch (FirebaseAuthException e) {
-
-        }
-        return null;
-    }
-
-    // 식물 상세 정보 조회
-    @ApiOperation(value = "식물 상세 정보 조회", notes =
-            "Path\n" +
-            "- id : 식물 정보 고유 번호(식물 조회 후)\n"+
-            "Response\n" +
-            "- id : 식물 정보 고유 번호 \n" +
-            "- common : 식물 학명 \n" +
-            "- name : 식물 이름 \n" +
-            "- level : 키우기 난이도 \n" +
-            "- temp : 적정 온도 \n" +
-            "- humid : 적정 습도 \n" +
-            "- water : 물주기 \n" +
-            "- info : 식물 정보 \n" +
-            "- image : 식물 이미지 \n\n" +
-            "값 없을 때(null) : 토큰 검사 실패한 경우 ")
-    @GetMapping("/info/detail/{id}")
-    public PlantResponse findByPlantInfo(@RequestHeader("TOKEN") String token, @PathVariable Long id) {
-        try{
-            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
-            return plantService.findByPlantInfo(decodedToken.getUid(), id);
         } catch (FirebaseAuthException e) {
 
         }
