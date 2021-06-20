@@ -7,11 +7,6 @@ export function myPlantRegister(formData) {
   return instanceFile.post('plant/care', formData);
 }
 
-// 나의 식물 이미지 분류 기반 등록
-export function myPlantIdentiyRegister(common) {
-  return instanceFile.post(`plant/care/${common}`);
-}
-
 // 나의 식물 상세 정보
 export function myPlantInfo(pid) {
   return instance.get(`plant/care/${pid}`);
@@ -50,16 +45,6 @@ export function myPlantWaterCancel(wid) {
 // 모든 식물 이름 조회(autocomplete를 위한 API)
 export function plantAll() {
   return instance.get('plant/info');
-}
-
-// 식물 이름 조회
-export function plantSearch(search) {
-  return instance.get(`plant/info/${search}`);
-}
-
-// 식물 상세 정보 조회
-export function plantInfoDetail(id) {
-  return instance.get(`plant/info/detail/${id}`);
 }
 
 //식물 판별
