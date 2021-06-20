@@ -159,39 +159,6 @@ public class PlantController {
         return 0L;
     }
 
-    // 나의 식물 이미지 분류 기반 등록 : 식물 학명 포함 정보 필요
-    @ApiOperation(value = "나의 식물 이미지 분류 기반 등록", notes =
-            "Path\n" +
-            "- common : 식물 학명(식물 이미지 분류 후 얻은)\n\n" +
-            "Request\n" +
-            "- pid : 0\n"+
-            "- rid : 식물을 등록할 방 고유 번호\n"+
-            "- nickname : 식물 애칭\n"+
-            "- image : 등록할 식물 이미지(null인 경우 기본 이미지)\n"+
-            "- startedDate : 식물 키우기 시작한 날짜\n\n"+
-            "Response\n" +
-            "- 1 이상 : 등록 성공한 나의 식물 고유 번호(pid) \n" +
-            "- 0 : 등록 실패")
-    @PostMapping("/care/{common}")
-    public Long saveByIdentify(@RequestHeader("TOKEN") String token, @PathVariable String common, MyPlantRequest myPlantRequest) {
-        try{
-            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
-            String image = "";
-            if(myPlantRequest.getImage() == null){
-                image = DEFAULT_PlANT_IMAGE;
-            }else{
-                MultipartFile file = myPlantRequest.getImage();
-                image = s3Uploader.upload(file);
-            }
-            return plantService.saveByIdentify(decodedToken.getUid(), common, myPlantRequest, image);
-        } catch (FirebaseAuthException e) {
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return 0L;
-    }
-
     // 나의 식물 상세 정보
     @ApiOperation(value = "나의 식물 상세 정보", notes =
             "Path\n" +
@@ -287,10 +254,10 @@ public class PlantController {
     // 물 준 날짜 조회
     @ApiOperation(value = "식물의 모든 물 준 날짜 조회", notes =
             "Path\n" +
-            "- pid : 나의 식물 고유 번호\n\n" +
-            "Response\n" +
-            "- wid : 물 준 고유 번호 \n" +
-            "- waterDate : 물 준 날짜")
+                    "- pid : 나의 식물 고유 번호\n\n" +
+                    "Response\n" +
+                    "- wid : 물 준 고유 번호 \n" +
+                    "- waterDate : 물 준 날짜")
     @GetMapping("/care/water/{pid}")
     public List<WaterResponse> getWater(@RequestHeader("TOKEN") String token, @PathVariable Long pid) {
         try{
@@ -306,11 +273,11 @@ public class PlantController {
     // 물 준 날짜 등록
     @ApiOperation(value = "물 준 날짜 등록", notes =
             "Request\n" +
-            "- pid : 나의 식물 고유 번호\n" +
-            "- waterDate : 물 준 날짜\n\n" +
-            "Response\n" +
-            "- 1 이상 : 물 준 날짜 등록 성공한 물 준 고유 번호(wid) \n" +
-            "- 0 : 물 준 날짜 등록 실패(토큰 검사 실패 or 나의 식물이 아닐 경우)")
+                    "- pid : 나의 식물 고유 번호\n" +
+                    "- waterDate : 물 준 날짜\n\n" +
+                    "Response\n" +
+                    "- 1 이상 : 물 준 날짜 등록 성공한 물 준 고유 번호(wid) \n" +
+                    "- 0 : 물 준 날짜 등록 실패(토큰 검사 실패 or 나의 식물이 아닐 경우)")
     @PostMapping("/care/water")
     public Long saveWater(@RequestHeader("TOKEN") String token, @RequestBody WaterRequest waterRequest) {
         try{
@@ -325,10 +292,10 @@ public class PlantController {
     // 물 준 날짜 취소(삭제)
     @ApiOperation(value = "물 준 날짜 취소", notes =
             "Path\n" +
-            "- wid : 물 준 고유 번호\n\n" +
-            "Response\n" +
-            "- 1 이상 : 물 준 날짜 취소 성공한 물 준 고유 번호(wid) \n" +
-            "- 0 : 물 준 날짜 취소 실패(토큰 검사 실패 or 나의 식물이 아닐 경우)")
+                    "- wid : 물 준 고유 번호\n\n" +
+                    "Response\n" +
+                    "- 1 이상 : 물 준 날짜 취소 성공한 물 준 고유 번호(wid) \n" +
+                    "- 0 : 물 준 날짜 취소 실패(토큰 검사 실패 or 나의 식물이 아닐 경우)")
     @DeleteMapping("/care/water/{wid}")
     public Long deleteWater(@RequestHeader("TOKEN") String token, @PathVariable Long wid) {
         try{
@@ -341,7 +308,6 @@ public class PlantController {
     }
 
     // 물 주기 알람
-    @GetMapping("/water")
     @Scheduled(cron = "00 00 12,16 * * ?") // 매일 12, 16시 마다 알람가도록
     public void waterNotice() throws IOException {
         List<NoticeResponse> todayWater = plantService.todayWater();

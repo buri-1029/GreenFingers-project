@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PlantService {
+    @Autowired
     private final UserRepository userRepository;
     @Autowired
     private final RoomRepository roomRepository;
@@ -77,18 +78,6 @@ public class PlantService {
         User curUser = getUser(userId);
         Optional<Room> room = roomRepository.findById(myPlantRequest.getRid());
         Optional<PlantInfo> plantInfo = plantInfoRepository.findById(myPlantRequest.getPid());
-
-        if(!curUser.getId().equals(room.get().getUser().getId()))
-            return 0L;
-        return savePlant(myPlantRequest, room, plantInfo, image);
-    }
-
-    // 나의 식물 이미지 분류 기반 등록
-    @Transactional
-    public Long saveByIdentify(String userId, String common, MyPlantRequest myPlantRequest, String image) {
-        User curUser = getUser(userId);
-        Optional<Room> room = roomRepository.findById(myPlantRequest.getRid());
-        Optional<PlantInfo> plantInfo = plantInfoRepository.findByCommon(common);
 
         if(!curUser.getId().equals(room.get().getUser().getId()))
             return 0L;
@@ -277,12 +266,12 @@ public class PlantService {
         for(DeviceToken d : allDeviceToken) {
             todayList.add(new NoticeResponse(userId, d.getToken(), plantCare.getNickname()));
             try {
-                fcmService.sendMessageTo(userId, messageKey, "띵동", "오늘 "+ plantCare.getNickname()+" 물 주는 날이에요.");
+                fcmService.sendMessageTo(userId, messageKey, "오늘 "+ plantCare.getNickname()+" 물 주는 날이에요.", "오늘 "+ plantCare.getNickname()+" 물 주는 날이에요.");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        userService.recordMsg(userId, messageKey, "띵동", "오늘 "+ plantCare.getNickname()+" 물 주는 날이에요.");
+        userService.recordMsg(userId, messageKey, "오늘 "+ plantCare.getNickname()+" 물 주는 날이에요.", "오늘 "+ plantCare.getNickname()+" 물 주는 날이에요.");
     }
 
     // 각 함수마다 사용자 존재 확인
