@@ -7,5 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface WaterRepository extends JpaRepository<Water, Long> {
+
     Optional<Water> findTopByPlantCareOrderByWaterDateDesc(PlantCare plantCare);
 }

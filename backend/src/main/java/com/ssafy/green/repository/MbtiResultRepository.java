@@ -9,5 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface MbtiResultRepository extends JpaRepository<MbtiResult, Long> {
+
     Optional<MbtiResult> findByType(String strType);
 }

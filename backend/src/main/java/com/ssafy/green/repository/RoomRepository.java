@@ -11,7 +11,5 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 
     List<Room> findByUserAndFlag(User user, boolean flag);
 
-    Room findByUserAndRoomNameAndFlag(User user, String roomName, boolean flag);
-
     Optional<Room> findByIdAndFlag(Long roomId, boolean flag);
 }

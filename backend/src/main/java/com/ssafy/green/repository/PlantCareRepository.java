@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface PlantCareRepository extends JpaRepository<PlantCare, Long> {
+
     List<PlantCare> findAllByDeadAndFlag(boolean dead, boolean flag);
 }
